@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chip-8 Emulator</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        #controls {
+            margin-bottom: 1rem;
+        }
+
+        #canvas {
+            border: 2px solid #e0e0e0;
+            image-rendering: pixelated;
+        }
+
+        #info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        button {
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>My Chip-8 Emulator</h1>
+    <div id="controls">
+        <label for="fileinput">Upload a Chip‑8 ROM:</label>
+        <input type="file" id="fileinput" autocomplete="off" />
+        <button id="resetbtn" disabled>Reset</button>
+    </div>
+    <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
+    <div id="info">Awaiting ROM…</div>
+
+</body>
+<script type="module" src="index.js"></script>
+
+</html>

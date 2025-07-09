@@ -1,0 +1,3 @@
+[env]
+PKG_CONFIG_PATH = "/opt/homebrew/lib/pkgconfig"
+LIBRARY_PATH = "/opt/homebrew/lib"

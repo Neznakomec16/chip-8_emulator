@@ -1,0 +1,37 @@
+name: Deploy WASM emulator to GitHub Pages
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: wasm32-unknown-unknown
+
+    - uses: jetli/wasm-pack-action@v0.4.0
+      with:
+        working-directory: wasm
+        args: --release --target web --out-dir ../wasm/web/wasm
+
+    - name: Assemble site
+      run: |
+        mkdir site
+        cp -r wasm/web/* site/
+        cp -r wasm/web/wasm/* site/
+
+    - uses: actions/upload-pages-artifact@v3
+      with:
+        path: site
+
+    - uses: actions/deploy-pages@v4
