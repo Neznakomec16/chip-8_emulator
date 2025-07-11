@@ -19,16 +19,16 @@ jobs:
         toolchain: stable
         target: wasm32-unknown-unknown
 
-    - uses: jetli/wasm-pack-action@v0.4.0
-      with:
-        working-directory: wasm
-        args: --release --target web --out-dir ../wasm/web/wasm
+    - name: Install
+      run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
     - name: Assemble site
       run: |
-        mkdir site
+        cd wasm
+        wasm-pack build --release --target web --out-dir web/wasm
+        cd ..
+        mkdir -p site
         cp -r wasm/web/* site/
-        cp -r wasm/web/wasm/* site/
 
     - uses: actions/upload-pages-artifact@v3
       with:
