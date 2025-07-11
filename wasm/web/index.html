@@ -69,21 +69,32 @@
 
         h1 {
             margin-bottom: 0.5rem;
+            font-size: 2rem;
+            text-align: center;
         }
 
         #controls {
             margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         #canvas {
             border: 2px solid #e0e0e0;
             image-rendering: pixelated;
+            max-width: 90vw;
+            height: auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         #info {
             margin-top: 0.5rem;
             font-size: 0.9rem;
             opacity: 0.8;
+            text-align: center;
         }
 
         button {
@@ -132,6 +143,49 @@
             margin: 0.5em 0 0 0;
             font-size: 0.95em;
             color: #b0b0b0;
+        }
+
+        /* --- Responsive styles --- */
+        @media (max-width: 900px) {
+            .center-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+            }
+
+            #sidebar,
+            #keypad {
+                margin: 0 auto;
+                min-width: unset;
+                width: 90vw;
+                max-width: 350px;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            #sidebar,
+            #keypad {
+                padding: 10px 4px;
+                font-size: 0.95em;
+            }
+
+            .keypad-grid div {
+                width: 24px;
+                height: 24px;
+                font-size: 0.95em;
+            }
+
+            #canvas {
+                max-width: 98vw;
+            }
         }
     </style>
 </head>
