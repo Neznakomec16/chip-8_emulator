@@ -219,7 +219,7 @@ A 0 B F      Z X C V
             const li = document.createElement('li');
             li.textContent = game;
             li.onclick = () => {
-                fetch(`../../c8games/${game}`)
+                fetch(`c8games/${game}`)
                     .then(resp => resp.ok ? resp.arrayBuffer() : Promise.reject("Not found"))
                     .then(buffer => {
                         const event = new CustomEvent('rom-loaded', { detail: { buffer, name: game } });
