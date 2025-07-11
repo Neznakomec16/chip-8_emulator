@@ -18,22 +18,22 @@ ctx.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE)
 
 const input = document.getElementById("fileinput")
 const info = document.getElementById("info");
-const resetBtn = document.getElementById("resetbtn");
+// const resetBtn = document.getElementById("resetbtn");
 
 async function run() {
     await init()
     let chip8 = new wasm.EmuWasm()
     currentChip8 = chip8;
-    resetBtn.addEventListener("click", () => {
-        if (currentChip8) {
-            currentChip8.reset();
-            info.textContent = "ROM reset";
-        }
-    });
+    // resetBtn.addEventListener("click", () => {
+    //     if (currentChip8) {
+    //         currentChip8.reset();
+    //         info.textContent = "ROM reset";
+    //         resetBtn.disabled = true; // Disable reset until a new ROM is loaded
+    //     }
+    // });
     document.addEventListener("keydown", function (evt) { chip8.keypress(evt, true) })
     document.addEventListener("keyup", function (evt) { chip8.keypress(evt, false) })
     input.addEventListener("change", function (evt) {
-        // handle file loading
         if (anim_frame != 0) {
             window.cancelAnimationFrame(anim_frame)
         }
@@ -55,6 +55,21 @@ async function run() {
         }
         fr.readAsArrayBuffer(file)
     }, false)
+
+    // Listen for ROM loaded from sidebar
+    window.addEventListener('rom-loaded', (e) => {
+        if (anim_frame != 0) {
+            window.cancelAnimationFrame(anim_frame)
+        }
+        const buffer = e.detail.buffer;
+        const name = e.detail.name;
+        const rom = new Uint8Array(buffer);
+        chip8.reset();
+        chip8.load_game(rom);
+        info.textContent = `Running ${name}`;
+        resetBtn.disabled = false;
+        mainloop(chip8);
+    });
 }
 
 function mainloop(chip8) {

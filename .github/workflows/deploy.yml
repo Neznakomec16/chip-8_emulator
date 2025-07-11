@@ -29,6 +29,7 @@ jobs:
         cd ..
         mkdir -p site
         cp -r wasm/web/* site/
+        cp -r c8games site/
 
     - uses: actions/upload-pages-artifact@v3
       with:

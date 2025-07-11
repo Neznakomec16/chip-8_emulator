@@ -6,14 +6,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chip-8 Emulator</title>
     <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: system-ui, sans-serif;
             background: #121212;
             color: #e0e0e0;
+            min-height: 100vh;
+            min-width: 100vw;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .center-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1400px;
+            gap: 32px;
+        }
+
+        #sidebar {
+            min-width: 200px;
+            background: #232323;
+            border-radius: 8px;
+            padding: 16px 8px;
+            height: fit-content;
+        }
+
+        #games-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #games-list li {
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        #games-list li:hover {
+            background: #333;
+        }
+
+        .main-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
         }
 
         h1 {
@@ -38,20 +89,147 @@
         button {
             margin-left: 1rem;
         }
+
+        #keypad {
+            min-width: 220px;
+            background: #232323;
+            border-radius: 8px;
+            padding: 16px 12px;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 32px);
+            grid-gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .keypad-grid div {
+            background: #181818;
+            border: 1px solid #444;
+            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #e0e0e0;
+        }
+
+        .keypad-labels {
+            font-size: 0.95em;
+            opacity: 0.85;
+            text-align: left;
+        }
+
+        .keypad-labels pre {
+            margin: 0.5em 0 0 0;
+            font-size: 0.95em;
+            color: #b0b0b0;
+        }
     </style>
 </head>
 
 <body>
-    <h1>My Chip-8 Emulator</h1>
-    <div id="controls">
-        <label for="fileinput">Upload a Chip‑8 ROM:</label>
-        <input type="file" id="fileinput" autocomplete="off" />
-        <button id="resetbtn" disabled>Reset</button>
+    <div class="center-container">
+        <div id="sidebar">
+            <h3>Games</h3>
+            <ul id="games-list">
+                <!-- Games will be populated here -->
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>My Chip-8 Emulator</h1>
+            <div id="controls">
+                <label for="fileinput">Upload a Chip‑8 ROM:</label>
+                <input type="file" id="fileinput" autocomplete="off" />
+                <!-- <button id="resetbtn" disabled>Reset</button> -->
+            </div>
+            <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
+            <div id="info">Awaiting ROM…</div>
+        </div>
+        <div id="keypad">
+            <h3>Keypad</h3>
+            <div class="keypad-grid">
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>Q</div>
+                <div>W</div>
+                <div>E</div>
+                <div>R</div>
+                <div>A</div>
+                <div>S</div>
+                <div>D</div>
+                <div>F</div>
+                <div>Z</div>
+                <div>X</div>
+                <div>C</div>
+                <div>V</div>
+            </div>
+            <div class="keypad-labels">
+                <div>CHIP-8 Keypad mapping:</div>
+                <pre>
+1 2 3 C      1 2 3 4
+4 5 6 D  =   Q W E R
+7 8 9 E      A S D F
+A 0 B F      Z X C V
+                </pre>
+            </div>
+        </div>
     </div>
-    <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
-    <div id="info">Awaiting ROM…</div>
+    <script type="module" src="index.js"></script>
+    <script>
+        const games = [
+            "15PUZZLE",
+            "BLINKY",
+            "BLITZ",
+            "BRIX",
+            "CONNECT4",
+            "GUESS",
+            "HIDDEN",
+            "INVADERS",
+            "KALEID",
+            "MAZE",
+            "MERLIN",
+            "MISSILE",
+            "PONG",
+            "PONG2",
+            "PUZZLE",
+            "SYZYGY",
+            "TANK",
+            "TETRIS",
+            "TICTAC",
+            "UFO",
+            "VBRIX",
+            "VERS",
+            "WIPEOFF",
+            // Add more ROM filenames here, or generate dynamically if possible
+        ];
 
+        const gamesList = document.getElementById('games-list');
+        games.forEach(game => {
+            const li = document.createElement('li');
+            li.textContent = game;
+            li.onclick = () => {
+                fetch(`../../c8games/${game}`)
+                    .then(resp => resp.ok ? resp.arrayBuffer() : Promise.reject("Not found"))
+                    .then(buffer => {
+                        const event = new CustomEvent('rom-loaded', { detail: { buffer, name: game } });
+                        window.dispatchEvent(event);
+                    })
+                    .catch(() => alert(`Failed to load ${game}`));
+            };
+            gamesList.appendChild(li);
+        });
+    </script>
 </body>
-<script type="module" src="index.js"></script>
 
 </html>
