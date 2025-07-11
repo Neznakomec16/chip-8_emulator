@@ -50,7 +50,7 @@ async function run() {
             chip8.reset()
             chip8.load_game(rom)
             info.textContent = `Running ${file.name}`;
-            resetBtn.disabled = false;
+            // resetBtn.disabled = false;
             mainloop(chip8)
         }
         fr.readAsArrayBuffer(file)
@@ -67,7 +67,7 @@ async function run() {
         chip8.reset();
         chip8.load_game(rom);
         info.textContent = `Running ${name}`;
-        resetBtn.disabled = false;
+        // resetBtn.disabled = false;
         mainloop(chip8);
     });
 }
